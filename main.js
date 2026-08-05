@@ -1,47 +1,46 @@
 "use strict";
 const user = {
-    guiSelectedPacks: Object.values({ ...document.getElementsByClassName("thumbnail selected") }),
-    selectedPacks: JSON.parse(JSON.stringify(selectedPacks)),
-    selectedPacksShow: JSON.parse(JSON.stringify(selectedPacksShow)),
+    guiSelectedPacks: Array.from(document.querySelectorAll(".thumbnail.selected")),
+    selectedPacks: structuredClone(selectedPacks),
+    selectedPacksShow: structuredClone(selectedPacksShow),
     categories: [...categories],
-    listedPacks: Array.from(selector.childNodes[0].childNodes).map(pack => pack.cloneNode(true)),
+    listedPacks: Array.from(selector.firstElementChild?.childNodes || []).map(pack => pack.cloneNode(true)),
     version: version
 };
-function createListOfChanges() {
-    const LIST_OF_CHANGES = document.createElement("ul");
-    LIST_OF_CHANGES.setAttribute("id", "changes_list");
-    LIST_OF_CHANGES.setAttribute("class", "outerlist ui-sortable");
-    return LIST_OF_CHANGES;
+function getPacksToHighlight(availablePackNames, savedPackNames) {
+    const savedSet = new Set(savedPackNames);
+    return new Set(availablePackNames.filter(name => savedSet.has(name)));
 }
-function getGuiUserSelectedPack() { return user.guiSelectedPacks; }
-function getGuiAllPacks() { return Object.values(document.getElementsByClassName("thumbnail")); }
-function selectPacksOfUser() {
-    const userPacks = getGuiUserSelectedPack();
-    const allPacks = getGuiAllPacks();
-    for (const change of allPacks) {
-        for (const userChange of userPacks) {
-            if ((change.text == userChange.text))
-                change.classList.add("selected");
-        }
-    }
+;
+function renderPacksHighlight(highlightState) {
+    const allPacks = document.querySelectorAll(".thumbnail");
+    allPacks.forEach(pack => {
+        pack.classList.toggle("selected", highlightState.has(pack.text));
+    });
 }
-function setListedChangesToUserListedChanges() {
-    selector.innerHTML = "";
-    const listOfPacks = createListOfChanges();
-    user.listedPacks.forEach(listedPack => listOfPacks.appendChild(listedPack));
-    selector.appendChild(listOfPacks);
+;
+function renderSidebar(savedNodes) {
+    const listOfPacks = document.createElement("ul");
+    listOfPacks.id = "changes_list";
+    listOfPacks.className = "outerlist ui-sortable";
+    listOfPacks.append(...savedNodes);
+    selector.replaceChildren(listOfPacks);
 }
-function setSelectedPacksToUserPacks() {
-    const userSelectedPacks = Object.entries(user.selectedPacks);
-    userSelectedPacks.forEach(uPack => selectedPacks[uPack[0]] = uPack[1]);
+;
+function updateGlobalState(savedPacks) {
+    Object.assign(selectedPacks, savedPacks);
     Object.assign(selectedPacksShow, selectedPacks);
 }
+;
 function main() {
     if (user.version === version) {
-        alert("First, change your version to a newer version");
+        alert("First, change your version to a newer version.");
         return;
     }
-    selectPacksOfUser();
-    setListedChangesToUserListedChanges();
-    setSelectedPacksToUserPacks();
+    const availablePacks = Array.from(document.querySelectorAll(".thumbnail")).map(p => p.text);
+    const userSavedPacks = user.guiSelectedPacks.map(p => p.text);
+    const packsToHighlight = getPacksToHighlight(availablePacks, userSavedPacks);
+    renderPacksHighlight(packsToHighlight);
+    renderSidebar(user.listedPacks);
+    updateGlobalState(user.selectedPacks);
 }
