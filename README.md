@@ -1,38 +1,49 @@
-# VanillaTweaksUpdater
+# vtwupdater — Vanilla Tweaks Resource Pack Updater
 
-> Updater for Vanilla Tweaks Minecraft resource packs
+> A client-side script to seamlessly update Vanilla Tweaks Minecraft resource packs to newer game versions.
 
-[Vanilla Tweaks](https://vanillatweaks.net/) is a popular web site for minecraft, which allows you to create data packs, resource packs and edit or add some crafts of the game.
+[Vanilla Tweaks](https://vanillatweaks.net/) is a popular website for Minecraft that allows you to create custom data packs, resource packs, and crafting tweaks. This utility was designed specifically for the [Resource Packs section](https://vanillatweaks.net/picker/resource-packs/) to help you migrate your customized pack to a newer game version without losing your selections.
 
-This utility is designed to [the part of resource packs](https://vanillatweaks.net/picker/resource-packs/). And allow you "update" your resource pack to a newer version of the game and works in the next way:</br>
+> **⚠️ DEPRECATION NOTICE**  
+> When this code was originally created, Vanilla Tweaks did not have a built-in feature to automatically update your resource packs between game versions. **Today, the website natively supports this feature.**  
+>
+> Because of this, this software is technically deprecated. However, it remains fully functional, and you are more than welcome to continue using it, study the code, or fork it for your own educational purposes!
 
-1. Once the resource pack is added (a .zip file), open the browser console on the site
+---
 
-2. Copy the code inside 'main.js' (or compile main.ts). Then Press enter and then, change your version to a different version (any way, even you doesn't change the game version, an alert warning you will be displayed, stopping 'main' function execution)
+## How to Use It
 
-3. Once the version was changed, in the same console, execute the 'main' function: `main()`
+Follow these steps to update your resource pack using the console script:
 
-4. Finally, the selector and packs-selector elements will be in the same state than when you added the resource pack. Also, the objects `selectedPacks` and `selectedPacksShow`
+1. **Upload your pack:** Go to the Vanilla Tweaks website and upload your existing resource pack (`.zip` file) so your current selections are loaded.
+2. **Inject the script:** Open your browser's Developer Console (usually `F12` or `Ctrl+Shift+J`). Copy the entire code from `main.js` (or the compiled `main.ts`), paste it into the console, and press **Enter**.
+3. **Change the version:** In the Vanilla Tweaks user interface, change the Minecraft version to your desired target version. *(Note: If you skip this step and try to run the script, it will alert you and stop the execution).*
+4. **Run the updater:** Go back to the browser console, type `main()`, and press **Enter**.
+5. **Done!** The visual grid (`packs-selector`), the side list (`selector`), and the internal data objects (`selectedPacks` and `selectedPacksShow`) will instantly sync to match your original selections in the new version.
 
-> Advice: Even if some category was moved to another category as a sub-category, the packs of that category still has markeds as selected.
-> This can be fixed, but makes the code harder for a project made here and there and in no time. Any way, in some moment I will fix this for comfort and make the utility in accordance with the site (if a native updater is not added until these moment xd)
-> Also keep in mind, that this utility doenst check if you selected a previous minecraft version to the version that the provided resource pack was originally designed. If you choose a very old version of Minecraft, your game probably will get some bugs on some textures
+---
 
-## Glosary
+## ⚠️ Important Notes
 
-- Pack: Changes that will be applied to the result resource pack
-- Category: Group of packs of the same kind
-- selectedPacks: object which contains the selected packs and which category belongs to
-- selectedPacksShow: The same as `selectedPacks` but is used for list the contents of the `selector`
-- selector: `div` HTML element which contains an `ul` element, used to list all the selected packs and which category belongs to
-- packs-selector: `div` HTML element which contains multiple `div` elements to show the categories.
+* **Category changes:** If Vanilla Tweaks moved a specific pack to a different sub-category in the newer version, the script will still mark it as selected visually, though it might not align perfectly with the site's new internal structure.
+* **Downgrading:** This utility does not verify if you are selecting an older Minecraft version than what the pack was originally designed for. If you downgrade to a very old version, some textures will likely break or display bugs in-game.
+* **Reverse Engineering:** The source code of Vanilla Tweaks is not public. This tool was built by analyzing the website's DOM and console behaviors.
 
-As a reference look the next picture:
-![image_reference](./Image%20reference%20VanillaTweaksUpdater.png)
+---
 
-> Final advice: Probably some concepts in the Glosary or other explanation may be wrong.
-> Because the source code of [Vanilla Tweaks](https://vanillatweaks.net/) is not public (almost until I have seen) and all the work was made working over analize the code of the website and constantly use the console and the inspector to see how to site respond to some actions
+## Glossary
 
-Enjoy the tool :)
+To help you understand the source code and how it interacts with the website:
 
-> Super-final-advice-I-promise: I already know that some code comments are badly documented, because was wrote on the fly when I start the tool and I feel lazy :)
+* **Pack:** The individual changes/textures that will be applied to the final downloaded resource pack.
+* **Category:** A group containing multiple packs of the same kind.
+* **selectedPacks:** The website's internal JavaScript object containing the packs you have selected and the categories they belong to.
+* **selectedPacksShow:** Similar to `selectedPacks`, but specifically used by the site to render the list inside the side panel.
+* **selector:** The HTML `div` element (containing a `ul`) on the right side of the screen used to list all your currently selected packs.
+* **packs-selector:** The main HTML `div` container in the center of the screen that holds all the visual categories and thumbnails.
+
+### Visual Reference
+
+![Vanilla Tweaks UI Reference](./vtwupdater_reference.png)
+
+Enjoy the tool! 🛠️
